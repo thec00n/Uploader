@@ -1,12 +1,12 @@
-# Upl04d3r
+# Uploader
 
 This Burp extension verifies if file uploads are vulnerable to directory traversal vulnerabilities. It further checks if  files can be uploaded into the web directory of the application. This should help speed up testing for file upload vulnerabilities and be the basis for futher testing such as uploading files that can be used to excute dynamic code. 
 
 ## Installation 
 * Load JRuby (tested with 1.7) 
-* Load `upl04d3r.rb`
+* Load `uploader.rb`
 * Load [burp-suite-error-message-checks](https://github.com/augustd/burp-suite-error-message-checks)
-* Active Scan run triggers `Upl04d3r`
+* Active Scan run triggers `Uploader`
 
 ## Module 1 
 The module assumes that the upload path is somewhere in the web directory and attempts file uploads based on directory traversal. It considers the Burp sitemap to find writeable directories.  
