@@ -1,0 +1,16 @@
+var
+www
+usr
+etc
+home
+htdocs
+root
+user
+web
+Windows
+inetpub
+dir
+upload
+volume
+tmp
+opt
