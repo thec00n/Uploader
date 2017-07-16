@@ -37,7 +37,7 @@ class BurpExtender
     @callbacks = callbacks
 
     #module switch
-    @module_1a = true
+    @module_1a = false
     @module_2a = true
 
     # files
@@ -111,9 +111,6 @@ class BurpExtender
         #--- Module 2a ---#
         #-----------------#
 
-        # fix the file.read bug - done ... sort of
-        # build some test cases
-
         if @module_2a
           @stdout.println "Running 2a"
           path_disclosures = getPathDisclosures(baseRequestResponse, i_service)
@@ -151,7 +148,6 @@ class BurpExtender
           traverse_second_list = Array.new
           filename_payloads=Array.new
 
-          @stdout.println path_disclosures
 
           path_disclosures_filtered.each do |path_disclosure|
             @upload_files.each do |filename, ct|
@@ -426,12 +422,13 @@ class BurpExtender
     i_request = @helpers.analyzeRequest(baseRequestResponse)
     request_body = @helpers.bytesToString(baseRequestResponse.getRequest()).split(/\r\n\r\n/,2)[1]
 
-    new_request_body = replace_body(request_body, full_file_path , file_content, content_type, i_request)
+    new_request_body = replace_body(request_body, full_file_path , "file_content", content_type, i_request)
     new_request = getHeaders(i_request) + "\r\n" + new_request_body
     new_request.gsub!("Content-Length: " + request_body.length.to_s, "Content-Length: " + new_request_body.length.to_s)
 
     #@stdout.println "Print Full Request:"
     #@stdout.println new_request
+
 
     response = @callbacks.makeHttpRequest(baseRequestResponse.getHttpService(),@helpers.stringToBytes(new_request))
 
