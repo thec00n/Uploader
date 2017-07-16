@@ -9,12 +9,6 @@ java_import 'burp.IHttpListener'
 java_import 'burp.IScannerListener'
 
 
-# TODO
-# 1. check if the error plugin is there - done
-# 2. support manual scans: filename, content-type
-# x. test everything
-# y. write the description
-
 # Ruby base from https://github.com/raesene/burp_sample_plugins
 
 class BurpExtender
