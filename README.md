@@ -1,6 +1,6 @@
 # Uploader
 
-This Burp extension verifies if file uploads are vulnerable to directory traversal vulnerabilities. It further checks if  files can be uploaded into the web directory of the application. This should help speed up testing for file upload vulnerabilities and be the basis for futher testing such as uploading files that can be used to excute dynamic code. 
+The Burp extension verifies if file uploads are vulnerable to directory traversal vulnerabilities. It further checks if  files can be uploaded into the web directory of the application. This should help speed up testing for file upload vulnerabilities and be the basis for futher testing such as uploading files that can be used to excute dynamic code. 
 
 ## Installation 
 * Load JRuby (tested with 1.7) 
