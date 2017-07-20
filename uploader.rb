@@ -101,7 +101,7 @@ class BurpExtender
             finding.detail = "The following files have been successfully uploaded to the server:<br/><br/> #{verified_urls.join("<br/>")}"
             finding.severity = "High"
             finding.confidence = "Certain"
-            finding.remediation_detail = "Fix your stuff"
+            finding.remediation_detail = "Check filenames based on a whitelist filter that only accepts files with specific file extensions and that does not allow directory traversal such \"../\" or \"\\..\" . For more information on directory traversal see http://cwe.mitre.org/data/definitions/22.html"
             finding.issue_background = "The following filename payloads have been used: <br/><br/> #{filename_payloads.join("<br/>")}"
             @callbacks.addScanIssue(finding)
           end
@@ -136,10 +136,10 @@ class BurpExtender
             finding.httpService=baseRequestResponse.getHttpService()
             finding.url= @helpers.analyzeRequest(baseRequestResponse).getUrl()
             finding.name = "Upl04d3r - Abosulte Path Disclosure - Module 2a"
-            finding.detail = "The following absolute path disclosures have been discovered:<br/><br/> #{path_disclosures_filtered.join("<br/>")}"
-            finding.severity = "High"
-            finding.confidence = "Certain"
-            finding.remediation_detail = "Fix your stuff"
+            finding.detail = "The following absolute path disclosures have been discovered. The discovery of absolute path disclosures in error messages might include false positives:<br/><br/> #{path_disclosures_filtered.join("<br/>")}"
+            finding.severity = "Low"
+            finding.confidence = "Tentative"
+            finding.remediation_detail = "It is advised to turn off verbose error messages and replace it with generic error pages that do not disclose sensitive technical information."
             finding.issue_background = " The engine tries to discover path disclosures from issues found by the error message check extension and from a quick fuzz run <br/><br/> "
             @callbacks.addScanIssue(finding)
           end
@@ -181,7 +181,7 @@ class BurpExtender
             finding.detail = "The following files have been successfully uploaded to the server:<br/><br/> #{verified_urls.join("<br/>")}"
             finding.severity = "High"
             finding.confidence = "Certain"
-            finding.remediation_detail = "Fix your stuff"
+            finding.remediation_detail = "Check filenames based on a whitelist filter that only accepts files with specific file extensions and that does not allow directory traversal such \"../\" or \"\\..\" . For more information on directory traversal see http://cwe.mitre.org/data/definitions/22.html"
             finding.issue_background = "The following filename payloads have been used: <br/><br/> #{filename_payloads.join("<br/>")}"
             @callbacks.addScanIssue(finding)
           end
