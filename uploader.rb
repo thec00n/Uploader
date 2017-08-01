@@ -37,15 +37,15 @@ class BurpExtender
     @callbacks = callbacks
 
     #module switch
-    @module_1a = false
-    @module_2a = true
+    @module_1a = true
+    @module_2a = false
 
     # files
     @upload_files = {
-        "Ic4nh4z1t.jpeg" => "image/jpeg" ,
-        "Ic4nh4z1t.pdf" => "application/pdf" ,
-        "Ic4nh4z1t.doc" => "application/msword" ,
-        "Ic4nh4z1t.png" => "image/png"
+        "0157e03014ebcaebb9abf549236dd81c0b0b878d.jpg" => "image/jpeg" ,
+        "0157e03014ebcaebb9abf549236dd81c0b0b878d.pdf" => "application/pdf" ,
+        "0157e03014ebcaebb9abf549236dd81c0b0b878d.docx" => "application/msword" ,
+        "0157e03014ebcaebb9abf549236dd81c0b0b878d.png" => "image/png"
     }
 
     @win_traverse = "..\\"
@@ -209,7 +209,7 @@ class BurpExtender
   def getPathDisclosures(baseRequestResponse,i_service)
     path_disclosure = Array.new
 
-    file = File.open("files/fuzz.txt", "r")
+    file = File.open("/Users/thec00n/work/research/burp_plugins/Uploader/files/fuzz.txt", "r")
     content = file.read
     file.close
 
@@ -238,7 +238,7 @@ class BurpExtender
     attack_unix = Array.new(1,"")
     all_path =  Array.new
 
-    @stdout.println attack_win.last
+  #  @stdout.println attack_win.last
 
     if filter.match(/win/) || filter.match(/all/)
       #attack_win.push (@win_traverse)
@@ -414,8 +414,8 @@ class BurpExtender
     end
 
     # Fighting UTF encoding errors, crappy solution ...
-    file = File.open("files/"+filename, "r")
-    file_content = file.read.unpack("C*").pack("U*")
+    file = File.open("files/"+filename, "rb")
+    file_content = file.read
     file.close
 
     # Get the request body
@@ -423,12 +423,8 @@ class BurpExtender
     request_body = @helpers.bytesToString(baseRequestResponse.getRequest()).split(/\r\n\r\n/,2)[1]
 
     new_request_body = replace_body(request_body, full_file_path , file_content, content_type, i_request)
-    new_request = getHeaders(i_request) + "\r\n" + new_request_body
-    new_request.gsub!("Content-Length: " + request_body.length.to_s, "Content-Length: " + new_request_body.length.to_s)
-
-    #@stdout.println "Print Full Request:"
-    #@stdout.println new_request
-
+    new_headers = getHeaders(i_request).gsub("Content-Length: " + request_body.length.to_s, "Content-Length: " + new_request_body.length.to_s)
+    new_request = new_headers + "\r\n" + new_request_body
 
     response = @callbacks.makeHttpRequest(baseRequestResponse.getHttpService(),@helpers.stringToBytes(new_request))
 
