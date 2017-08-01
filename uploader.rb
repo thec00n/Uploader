@@ -1,4 +1,5 @@
 require 'java'
+require 'base64'
 java_import 'burp.IBurpExtender'
 java_import 'burp.IScannerCheck'
 java_import 'burp.IScanIssue'
@@ -38,13 +39,13 @@ class BurpExtender
 
     #module switch
     @module_1a = true
-    @module_2a = false
+    @module_2a = true
 
     # files
     @upload_files = {
         "0157e03014ebcaebb9abf549236dd81c0b0b878d.jpg" => "image/jpeg" ,
         "0157e03014ebcaebb9abf549236dd81c0b0b878d.pdf" => "application/pdf" ,
-        "0157e03014ebcaebb9abf549236dd81c0b0b878d.docx" => "application/msword" ,
+        "0157e03014ebcaebb9abf549236dd81c0b0b878d.docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ,
         "0157e03014ebcaebb9abf549236dd81c0b0b878d.png" => "image/png"
     }
 
@@ -80,14 +81,16 @@ class BurpExtender
 
           @upload_files.each do |filename, ct|
             traversal = generateTraversal(filename,sub_folders,depth,"all")
-            #@stdout.println traversal
+
             traversal.each do |full_file_path|
+             # @stdout.println full_file_path
               filename_payloads.push full_file_path
               response = send_repackage_upload(baseRequestResponse, full_file_path)
               #@stdout.println @helpers.bytesToString response.getResponse
 
             end
           end
+
 
           url_paths = getVerificationURLS(i_service.getHost)
           verified_urls = verifyUrlsExist(url_paths, baseRequestResponse)
@@ -288,6 +291,7 @@ class BurpExtender
         folders.push url_first + folder
         folders.push url_first + folder + "/upload/"
         folders.push url_first + folder + "/uploads/"
+
       end
     end
 
@@ -331,9 +335,7 @@ class BurpExtender
 
       #@stdout.println "Part: " + b
       if filename = b.match(/filename\=\"(.+)\"/)
-
         part = b.gsub(filename[1],full_file_path)
-
 
         # replace the content-type with the correct one
         contenttype_old = b.match(/Content-Type:\s(.+)/)
@@ -413,7 +415,6 @@ class BurpExtender
 
     end
 
-    # Fighting UTF encoding errors, crappy solution ...
     file = File.open("files/"+filename, "rb")
     file_content = file.read
     file.close
@@ -458,11 +459,17 @@ class BurpExtender
   def verify_upload(baseRequestResponse,url)
     request = @helpers.buildHttpRequest(java.net.URL.new(url));
     response = @callbacks.makeHttpRequest(baseRequestResponse.getHttpService(),request).getResponse
-    response_raw = @helpers.bytesToString(response)
+    response_header =  @helpers.bytesToString(response).split("\r\n\r\n")[0]
     code = @helpers.analyzeResponse(response).getStatusCode()
 
     if code.to_s.match(/200/)
-      return true
+      @upload_files.each do |filename, ct|
+        if url.match /#{filename}/
+          if response_header.match (/#{ct}/)
+            return true
+          end
+        end
+      end
     end
 
     false

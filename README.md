@@ -15,5 +15,5 @@ The module assumes that the upload path is somewhere inside application director
 The module assumes that the upload path is somewhere outside of the application directory. In order to find accessible application directories it does basic fuzzing for the file upload to trigger error messages disclosing the absolute path. Additionally, it queries all findings from the passive scanning extension [burp-suite-error-message-checks](https://github.com/augustd/burp-suite-error-message-checks) to find additional potentially valid paths of the file system that are writeable as well as accessible. 
 
 ## Clean Up
-The extension is fairly aggressive in terms of trying to write files onto the system. If the scan has spammed files all over the file system or in certain directories, cleaning up should be straight forward as the extension only creates files with the name `Ic4nh4z1t`.
+The extension is fairly aggressive in terms of trying to write files onto the system. If the scan has spammed files all over the file system or in certain directories, cleaning up should be straight forward as the extension only creates files with the name `0157e03014ebcaebb9abf549236dd81c0b0b878d`.
 
