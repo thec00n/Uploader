@@ -18,7 +18,7 @@ class BurpExtender
   def registerExtenderCallbacks(callbacks)
 
     # set our extension name
-    callbacks.setExtensionName("Upl04d3r")
+    callbacks.setExtensionName("Uploader")
 
 
     #Register for Scanner Callbacks
@@ -29,7 +29,7 @@ class BurpExtender
     @stderr = java.io.PrintWriter.new(callbacks.getStderr(), true)
 
     # write a message to our output stream
-    @stdout.println("Upl04d3r running baby")
+    @stdout.println("Uploader running")
 
     #Obtain an extension to the helpers object
     @helpers = callbacks.getHelpers()
@@ -92,7 +92,7 @@ class BurpExtender
           end
 
 
-          url_paths = getVerificationURLS(i_service.getHost)
+          url_paths = getVerificationURLS(i_service.getHost,i_service.getPort)
           verified_urls = verifyUrlsExist(url_paths, baseRequestResponse)
 
           unless verified_urls.empty?
@@ -166,13 +166,13 @@ class BurpExtender
 
               traverse_second_list.each do |traverse_second|
                 full_file_path = traverse_first + path_disclosure + traverse_second
-                @stdout.println full_file_path
+               # @stdout.println full_file_path
                 filename_payloads.push full_file_path
                 response = send_repackage_upload(baseRequestResponse, full_file_path)
               end
             end
           end
-          url_paths = getVerificationURLS(i_service.getHost)
+          url_paths = getVerificationURLS(i_service.getHost,i_service.getPort)
           verified_urls = verifyUrlsExist(url_paths, baseRequestResponse)
 
           unless verified_urls.empty?
@@ -277,7 +277,7 @@ class BurpExtender
     all
   end
 
-  def getVerificationURLS(host)
+  def getVerificationURLS(host,port)
     folders=Array.new
     sitemap = @callbacks.getSiteMap(nil)
     sitemap.each do |item|
@@ -286,6 +286,8 @@ class BurpExtender
 
       if url.to_s.match(/#{host}/)
         url_first = url.getProtocol() + "://" + host
+        url_first+= ":" + port.to_s if port.to_s != 443 or port.to_s != 80
+
         path = url.getPath()
         folder = path.slice(0..path.rindex(/\//))
         folders.push url_first + folder
